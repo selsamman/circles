@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.Circle {
+  position: absolute;
+  background-color: royalblue;
+  border-radius: 50%;
+}
