@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {observable, observer} from "proxily";
-
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 class Circle {
   xPos = 0;
@@ -49,21 +50,27 @@ class Data {
   }
   screenWidth = 1024;
   screenHeight = 1024;
-  size = 200;
+  size = 100;
   quantity = 10;
   speed = 0;
 }
-
+let newSize = 100;
 const data = observable(new Data);
 
 function App() {
 
   useEffect( () => {
+    handleWindowResize();
     data.fillCircles();
-    //setInterval(() => data.move(), 10);
+    setInterval(() => {
+      if (data.size != newSize) {
+        data.size = newSize;
+        data.fillCircles()
+      }
+    }, 1000);
     function handleWindowResize() {
       const s = getWindowSize();
-      data.screenHeight = s.innerHeight;
+      data.screenHeight = s.innerHeight * .9;
       data.screenWidth = s.innerWidth;
       data.size =data.screenWidth / 10;
       data.fillCircles();
@@ -77,9 +84,17 @@ function App() {
   }, []);
   return (
    <div className="App">
-     {data.circles.map((circle, ix) =>
-         <div onClick={() => data.remove(ix)} className="Circle" style={{left: circle.xPos, top: circle.yPos, width: circle.width, height: circle.width}} >&nbsp;</div>
-     )}
+     <div className="Top">
+       <div className="BallsContainer">
+         &nbsp;
+         {data.circles.map((circle, ix) =>
+             <div onClick={() => data.remove(ix)} className="Circle" style={{left: circle.xPos, top: circle.yPos, width: circle.width, height: circle.width}} >&nbsp;</div>
+         )}
+       </div>
+     </div>
+     <div className="Bottom">
+        <Slider className="Slider" min={50} max={200} value={newSize} onChange={(v) => newSize = v instanceof Array ? v[0] : v} />
+     </div>
    </div>
   );
 }
